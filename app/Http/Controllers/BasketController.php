@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\Product;
 
-
 class BasketController extends Controller
 {
     public function basket() {
@@ -16,6 +15,7 @@ class BasketController extends Controller
         if (!is_null($orderId)) {
             $order = Order::findOrFail($orderId);
         }
+
         return view('basket', compact('order'));
     }
 

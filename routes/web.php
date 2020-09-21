@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\ResetController;
 
 
 
@@ -28,15 +29,24 @@ Auth::routes([
     'verify' => false,
 ]);
 
-Route::get('/',  [MainController::class, 'home'])->name("index");
 Route::get('/logout', [LoginController::class, 'logout'])->name('get-logout');
+Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
 
 Route::group(['middleware' => 'auth'], function() {
     Route::group([
+        'prefix' => 'person',
+        'as' => 'person.'
+    ], function() {
+        Route::get('/orders', 'App\Http\Controllers\Person\OrderController@index')->name('orders.index');
+        Route::get('/orders/{order}', 'App\Http\Controllers\Person\OrderController@shows')->name('orders.show');
+    });
+
+    Route::group([
         'middleware' => 'is_admin',
-        'prefix' => 'admin'
+        'prefix' => 'admin',
     ], function() {
         Route::get('/orders', [OrderController::class, 'index'])->name('home');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::resource('categories', CategoryController::class);
         Route::resource('products', ProductController::class);
     });
@@ -55,6 +65,7 @@ Route::group(['prefix' => 'basket'], function() {
     });
 });
 
+Route::get('/',  [MainController::class, 'home'])->name("index");
 Route::get('/categories',  [MainController::class, 'categories'])->name("categories");
 Route::get('/{category}',  [MainController::class, 'singleCategory'])->name("category");
 Route::get('/{category}/{product?}',  [MainController::class, 'singleProduct'])->name("product");
