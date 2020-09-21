@@ -69,5 +69,3 @@ Route::get('/',  [MainController::class, 'home'])->name("index");
 Route::get('/categories',  [MainController::class, 'categories'])->name("categories");
 Route::get('/{category}',  [MainController::class, 'singleCategory'])->name("category");
 Route::get('/{category}/{product?}',  [MainController::class, 'singleProduct'])->name("product");
-
-

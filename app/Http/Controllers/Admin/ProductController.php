@@ -43,12 +43,10 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        $path = $request->file('image')->store('products');
-        $params = $request->all();
-        $params['image'] = $path;
+        $params = $this->prepareData($request);
 
         Product::create($params);
-
+        
         return redirect()->route('products.index');
     }
 
@@ -83,18 +81,11 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
-        $params = $request->all();
-
-        unset($params['image']);
-
-        if ($request->has('image')) {
-            Storage::delete($product->image);
-            $path = $request->file('image')->store('products');
-            $params['image'] = $path;
-        }
-
+        $params = $this->prepareData($request, $product);
         $product->update($params);
         
+        session()->flash('success', 'Товар обновлен');
+
         return redirect()->route('products.index');
     }
     /**
@@ -107,5 +98,27 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->route('products.index');
+    }
+
+    public function prepareData($request, $product = null) {
+
+        $params = $request->all();
+
+        unset($params['image']);
+
+        if ($request->has('image')) {
+            if (!is_null($product)) {
+                Storage::delete($product->image);
+            }
+            
+            $path = $request->file('image')->store('products');
+            $params['image'] = $path;
+        }
+        
+        foreach (['new', 'hit', 'recommend'] as $fieldName) {
+            $params[$fieldName] = isset($params[$fieldName]) ? 1 : 0;
+        }
+
+        return $params;
     }
 }

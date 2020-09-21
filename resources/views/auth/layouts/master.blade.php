@@ -79,10 +79,9 @@
 
     <div class="py-4">
         <div class="container">
+            @include('layouts.messages')
             <div class="row justify-content-center">
                 @yield('content')
-                
-
             </div>
         </div>
     </div>

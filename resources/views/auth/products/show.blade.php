@@ -50,17 +50,19 @@
             <tr>
                 <td>Лейблы</td>
                 <td>
-                   {{--  @if($product->isNew())
-                        <span class="badge badge-success">Новинка</span>
-                    @endif
+                    <div class="labels">
+                        @if($product->isNew())
+                            <span class="badge badge-success">Новинка</span>
+                        @endif
 
-                    @if($product->isRecommend())
-                        <span class="badge badge-warning">Рекомендуем</span>
-                    @endif
+                        @if($product->isRecommend())
+                            <span class="badge badge-warning">Рекомендуем</span>
+                        @endif
 
-                    @if($product->isHit())
-                        <span class="badge badge-danger">Хит продаж!</span>
-                    @endif--}}
+                        @if($product->isHit())
+                            <span class="badge badge-danger">Хит продаж!</span>
+                        @endif
+                    </div>
                 </td>
             </tr>
             </tbody>
