@@ -21,10 +21,6 @@ class Product extends Model
         return Category::find($this->category_id)->name;
     }
 
-    public function getUrl() {
-        return route('product',[ $this->category->code, $this->code]);
-    }
-
     public function getPriceForCount() {
         if (!is_null($this->pivot)) {
             return $this->price * $this->pivot->count;
@@ -33,18 +29,17 @@ class Product extends Model
         return $this->price;
     }
 
-    /*public function setNewAttribute($value) {
-        $this->attributes['new'] = $value === 'on' ? 1 : 0;
+    public function scopeHit($query) {
+        return $query->orWhere('hit', 1);
     }
 
-    public function setHitAttribute($value) {
-        $this->attributes['hit'] = $value === 'on' ? 1 : 0;
+    public function scopeNew($query) {
+        return $query->orWhere('new', 1);
     }
 
-    public function setRecommendAttribute($value) {
-        $this->attributes['recommend'] = $value === 'on' ? 1 : 0;
+    public function scopeRecommend($query) {
+        return $query->orWhere('recommend', 1);
     }
-*/
 
     public function isHit() {
         return $this->hit === 1;

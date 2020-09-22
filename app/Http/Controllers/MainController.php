@@ -10,7 +10,7 @@ use App\Http\Requests\ProductsFilterRequest;
 class MainController extends Controller
 {
     public function index(ProductsFilterRequest $requset) {
-        $productQuery = Product::query();
+        $productQuery = Product::with('category');
 
         if ($requset->filled('price_from')) {
             $productQuery->where('price', '>=', $requset->price_from);
@@ -25,7 +25,7 @@ class MainController extends Controller
         if ($requset->hasAny($checkboxes)) {
             $productQuery->where(function($query ) use ($requset, $checkboxes) {
                 foreach($checkboxes as $field) {
-                    $requset->has($field) && $query->orWhere($field, 1);
+                    $requset->has($field) && $query->$field();
                 }
             });
         }
@@ -42,12 +42,21 @@ class MainController extends Controller
 
     public function singleCategory($categoryCode) {
         $category = Category::where('code', $categoryCode)->first();
+
+        if (is_null($category)) {
+            abort(404);
+        }
+
         return view('single-category', compact('category'));
     }
 
     public function singleProduct($categoryCode, $productCode = null) {
-
         $product = Product::where('code', $productCode)->first();
+
+        if (is_null($product)) {
+            abort(404);
+        }
+
         $category = $product->category;
 
         return view('single-product', compact('category', 'product'));

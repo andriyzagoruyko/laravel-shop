@@ -45,3 +45,8 @@ span.badge.badge-danger {
 div.filters {
     padding-bottom: 5px;
 }
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}

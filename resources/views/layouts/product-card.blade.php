@@ -17,10 +17,9 @@
         <div class="caption">
             <h3>{{ $product->name }}</h3>
             <p>{{ $product->price }} ₽</p>
-            <p>{{ $product->category->name }}</p>
             <form action="{{ route('basket-add', $product) }}" method="POST">
                 <button type="submit" class="btn btn-primary" role="button">В корзину</button>
-                <a href="{{ $product->getUrl() }}" class="btn btn-default" role="button">Подробнее</a>
+                <a href="{{ route('product', [isset($category) ? $category->code : $product->category->code, $product->code]) }}" class="btn btn-default" role="button">Подробнее</a>
                 @csrf
             </form>
         </div>

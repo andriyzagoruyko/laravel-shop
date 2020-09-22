@@ -35,19 +35,20 @@ class BasketController extends Controller
         $orderId = session('orderId');
         
         if (is_null($orderId)) {
-            return redirect()->route('home');
+            return redirect()->route('index');
         }
 
         $order = Order::find($orderId);
         $success = $order->saveOrder($request->input('name'), $request->input('phone'));
 
         if ($success) {
+            Order::eraseOrderSum(0);
             session()->flash('success', 'Ваш заказ принят в обработку');
         } else{
             session()->flash('warning', 'Случилась ошибка');
         }
 
-        return redirect()->route('home');
+        return redirect()->route('index');
     }
 
     public function basketAdd($productId) {
@@ -76,6 +77,8 @@ class BasketController extends Controller
 
         $product = Product::find($productId);
 
+        Order::changeFullSum($product->price);
+
         session()->flash('success', 'Добавлено в корзину: ' .  $product->name);
 
         return redirect()->route('basket');
@@ -99,11 +102,12 @@ class BasketController extends Controller
                 $pivotRow->count--;
                 $pivotRow->update();
             }
+
+            $product = Product::find($productId);
+
+            Order::changeFullSum(-$product->price);
+            session()->flash('warning', 'Удалено с корзины: ' .  $product->name);
         }
-
-        $product = Product::find($productId);
-
-        session()->flash('warning', 'Удалено с корзины: ' .  $product->name);
 
         return redirect()->route('basket');
     }
