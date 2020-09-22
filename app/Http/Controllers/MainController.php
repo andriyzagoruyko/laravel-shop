@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
 use App\Http\Requests\ProductsFilterRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 class MainController extends Controller
 {
@@ -41,24 +43,20 @@ class MainController extends Controller
     }
 
     public function singleCategory($categoryCode) {
-        $category = Category::where('code', $categoryCode)->first();
-
-        if (is_null($category)) {
-            abort(404);
-        }
-
+        $category = Category::where('code', $categoryCode)->firstOrFail();
         return view('single-category', compact('category'));
     }
 
     public function singleProduct($categoryCode, $productCode = null) {
-        $product = Product::where('code', $productCode)->first();
+        $product = Product::byCode($productCode)->first();
 
-        if (is_null($product)) {
-            abort(404);
+        if (Auth::check() && Auth::user()->isAdmin()) {
+                $product = Product::withTrashed()->byCode($productCode)->firstOrFail();
+        }else {
+            $product = Product::byCode($productCode)->firstOrFail(); 
         }
 
         $category = $product->category;
-
         return view('single-product', compact('category', 'product'));
     }
 }

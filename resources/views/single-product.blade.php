@@ -7,7 +7,8 @@
 @section('content')
     <h1>{{ $product->name }}</h1>
     <h2>{{ $category->name }}</h2>
-    <p>Цена: <b>{{ $product->price }} ₽</b></p>
+
+
     <img src="{{ Storage::url($product->image) }}">
     <div class="labels">
         @if($product->isNew())
@@ -22,10 +23,18 @@
             <span class="badge badge-danger">Хит продаж!</span>
         @endif            
     </div>
+
+    @if($product->isAvailable()) 
+        <p class="alert-success">В наличии</p> 
+    @else
+        <p class="alert-danger">Нет в наличии</p> 
+    @endif
+
+    <p>Цена: <b>{{ $product->price }} ₽</b></p>
     <p>{{ $product->description }}</p>
 
     <form action="{{ route('basket-add', $product) }}" method="POST">
         @csrf
-        <button type="submit" class="btn btn-success" role="button">Добавить в корзину</button>
+        <button type="submit" class="btn btn-success" role="button" @if(!$product->isAvailable()) disabled @endif>Добавить в корзину</button>
     </form>
 @endsection

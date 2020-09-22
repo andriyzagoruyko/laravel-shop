@@ -14,13 +14,13 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
-    {
+    public function index() {
         $orders = Order::active()->paginate(10);
         return view('auth.orders.index', compact('orders'));
     }
 
     public function show(Order $order) {
-        return view('auth.orders.show', compact('order'));
+        $products = $order->products()->withTrashed()->get();
+        return view('auth.orders.show', compact('order', 'products'));
     }
 }

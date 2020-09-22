@@ -16,9 +16,16 @@
         <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}">
         <div class="caption">
             <h3>{{ $product->name }}</h3>
+            
+            @if($product->isAvailable()) 
+                <span class="alert-success">В наличии</span> 
+            @else
+                <span class="alert-danger">Нет в наличии</span> 
+            @endif
+
             <p>{{ $product->price }} ₽</p>
             <form action="{{ route('basket-add', $product) }}" method="POST">
-                <button type="submit" class="btn btn-primary" role="button">В корзину</button>
+                <button type="submit" class="btn btn-primary" role="button" @if(!$product->isAvailable()) disabled @endif>В корзину</button>
                 <a href="{{ route('product', [isset($category) ? $category->code : $product->category->code, $product->code]) }}" class="btn btn-default" role="button">Подробнее</a>
                 @csrf
             </form>
