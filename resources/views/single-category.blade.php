@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', '{{ $category->name }}')  
+@section('title', $category->name )  
 
 @section('content')
     <h1>{{ $category->name }} ({{ $category->products->count() }})</h1>
