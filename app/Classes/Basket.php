@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Classes;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
 use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
+use App\Mail\OrderCreated;
+
 
 
 class Basket
@@ -22,7 +26,7 @@ class Basket
                 $data['user_id'] = Auth::id();
             }
 
-            $this->order = Order::create($data);
+            $order = $this->order = Order::create($data);
             session(['orderId' => $order->id]);
         }
         else {
@@ -34,22 +38,36 @@ class Basket
         return $this->order;
     }
 
-    public function countAvaliable(){
+    public function countAvaliable($updateCount = false){
+        $orderList = $this->order->products;
 
-        foreach($this->order->products as $orderProduct)
+        foreach($orderList as $orderProduct)
         {
-            if ($orderProduct->count < $this->getPivotRow($orderProduct)->count) {
+            $pivotCount = $this->getPivotRow($orderProduct)->count;
+
+            if ($orderProduct->count < $pivotCount) {
                 return false;
             }
+
+            if ($updateCount) {
+                $orderProduct->count -= $pivotCount;
+            }
+        }
+
+        if ($updateCount) {
+            $orderList->map->save();
         }
 
         return true;
     }
 
-    public function saveOrder($name, $phone) {
-        if (!$this->countAvaliable()) {
+    public function saveOrder($name, $phone, $email) {
+        if (!$this->countAvaliable(true)) {
             return false;
         }
+
+        Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
+
         return $this->order->saveOrder($name, $phone);
     }
 

@@ -56,18 +56,4 @@ class Order extends Model
 
         return false;
     }
-
-    /*static function getOrCreate() {
-        $orderId = session('orderId');
-        
-        if (is_null($orderId)) {
-            $order = Order::create();
-            session(['orderId' => $order->id]);
-        }
-        else {
-            $order = Order::find($orderId);
-        }
-
-        return $order;
-    }*/
 }

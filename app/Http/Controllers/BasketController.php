@@ -8,7 +8,6 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Classes\Basket;
 
-
 class BasketController extends Controller
 {
     public function basket() {
@@ -29,7 +28,10 @@ class BasketController extends Controller
     }
 
     public function basketConfirm(Request $request) {
-        if ((new Basket())->saveOrder($request->name, $request->phone)) {
+
+        $email = Auth::check() ? Auth::user()->email :  $request->email;
+
+        if ((new Basket())->saveOrder($request->name, $request->phone, $email)) {
             Order::eraseOrderSum(0);
             session()->flash('success', 'Ваш заказ принят в обработку');
         } else{
