@@ -10,8 +10,6 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ResetController;
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -65,6 +63,7 @@ Route::group(['prefix' => 'basket'], function() {
     });
 });
 
+Route::get('/locale/{locale}',  [MainController::class, 'changeLocale'])->name("locale");
 
 Route::get('/',  [MainController::class, 'index'])->name("index");
 Route::get('/categories',  [MainController::class, 'categories'])->name("categories");

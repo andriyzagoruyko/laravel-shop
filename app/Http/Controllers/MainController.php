@@ -10,6 +10,8 @@ use App\Http\Requests\ProductsFilterRequest;
 use App\Http\Requests\SubscriptionRequest;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
+
 
 
 class MainController extends Controller
@@ -71,5 +73,16 @@ class MainController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Спасибо, мы сообщим когда товар появится в наличии');
+    }
+
+    public function changeLocale($locale) {
+
+        $locales = ['en', 'ru'];
+
+        if (in_array($locale, $locales)) {
+            session(['locale'=> $locale]);
+        }
+
+        return redirect()->back();
     }
 }
