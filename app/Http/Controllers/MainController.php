@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Subscription;
 use App\Http\Requests\ProductsFilterRequest;
+use App\Http\Requests\SubscriptionRequest;
+
 use Illuminate\Support\Facades\Auth;
 
 
@@ -58,5 +61,15 @@ class MainController extends Controller
 
         $category = $product->category;
         return view('single-product', compact('category', 'product'));
+    }
+
+    public function subscribe(SubscriptionRequest $request, Product $product) {
+
+        Subscription::create([
+            'email' => $request->email,
+            'product_id' => $product->id
+        ]);
+
+        return redirect()->back()->with('success', 'Спасибо, мы сообщим когда товар появится в наличии');
     }
 }
