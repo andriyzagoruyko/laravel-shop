@@ -12,9 +12,9 @@ trait Translatable
         $locale = App::getLocale() ?? $this->defaultLocale;
         $localeFiledName = $fieldName . '_' . $locale;
 
-        if (!array_key_exists($localeFiledName, $this->attributes)) {
+        /*if (!array_key_exists($localeFiledName, $this->attributes)) {
             throw new \LogicException('no such attribute for model ' . get_class($this));
-        }
+        }*/
 
         $result = $this->$localeFiledName;
 

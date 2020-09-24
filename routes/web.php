@@ -64,6 +64,7 @@ Route::group(['prefix' => 'basket'], function() {
 });
 
 Route::get('/locale/{locale}',  [MainController::class, 'changeLocale'])->name("locale");
+Route::get('/currency/{currencyCode}',  [MainController::class, 'changeCurrency'])->name("currency");
 
 Route::get('/',  [MainController::class, 'index'])->name("index");
 Route::get('/categories',  [MainController::class, 'categories'])->name("categories");
