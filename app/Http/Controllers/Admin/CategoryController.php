@@ -84,13 +84,12 @@ class CategoryController extends Controller
 
     public function update(CategoryRequest $request, Category $category)
     {
-        Storage::delete($category->image);
-
         $params = $request->all(); 
 
         unset($params['image']);
 
         if ($request->has('image')) {
+            Storage::delete($category->image);
             $params['image'] = $request->file('image')->store('categories');
         }
 

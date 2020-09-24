@@ -13,9 +13,9 @@
                 <span class="badge badge-danger">Хит продаж!</span>
             @endif            
         </div>
-        <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}">
+        <img src="{{ Storage::url($product->image) }}" alt="{{ $product->__('name') }}">
         <div class="caption">
-            <h3>{{ $product->name }}</h3>
+            <h3>{{ $product->__('name') }}</h3>
             
             @if($product->isAvailable()) 
                 <span class="alert-success">В наличии</span> 

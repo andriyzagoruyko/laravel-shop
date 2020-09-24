@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\softDeletes;
+use App\Models\Traits\Translatable;
 
 
 class Product extends Model
 {
-    use HasFactory;
-    use softDeletes;
+    use HasFactory, softDeletes, Translatable;
 
     protected $fillable = [
-        'code', 'name', 'category_id', 'description', 'image', 'hit', 'new', 'recommend', 'count'
+        'code', 'name', 'name_en', 'category_id', 'description', 'description_en', 'image', 'hit', 'new', 'recommend', 'count'
     ];
 
     public function category() {

@@ -5,8 +5,8 @@
 @section('title', $product->name)  
 
 @section('content')
-    <h1>{{ $product->name }}</h1>
-    <h2>{{ $category->name }}</h2>
+    <h1>{{ $product->__('name') }}</h1>
+    <h2>{{ $category->__('name') }}</h2>
 
 
     <img src="{{ Storage::url($product->image) }}">
@@ -32,7 +32,7 @@
             <span>Сообщить мне, когда товар появится в наличии.</span> 
 
             @if($errors->get('email')) 
-            <p class='alert alert-danger'>{!! $errors->get('email')[0] !!}</p> 
+            <p class='alert alert-danger'>{!! $errors->get('email') !!}</p> 
             @endif
 
             <form action="{{ route('subscription', $product) }}" method="POST">
