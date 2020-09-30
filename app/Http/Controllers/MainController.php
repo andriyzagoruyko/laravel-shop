@@ -13,8 +13,6 @@ use App\Http\Requests\SubscriptionRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 
-
-
 class MainController extends Controller
 {
     public function index(ProductsFilterRequest $requset) {
