@@ -42,8 +42,7 @@ class MainController extends Controller
     }
 
     public function categories() {
-        $categories =  Category::all();
-        return view('categories', compact('categories'));
+        return view('categories');
     }
 
     public function singleCategory($categoryCode) {

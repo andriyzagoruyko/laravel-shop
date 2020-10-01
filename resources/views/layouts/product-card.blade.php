@@ -23,7 +23,7 @@
                 <span class="alert-danger">Нет в наличии</span> 
             @endif
 
-            <p>{{ $product->price }} {{ App\Services\CurrencyConvertion::getCurrencySymbol() }}</p>
+            <p>{{ $product->price }} {{ $currencySymbol }}</p>
             <form action="{{ route('basket-add', $product) }}" method="POST">
                 <button type="submit" class="btn btn-primary" role="button" @if(!$product->isAvailable()) disabled @endif>В корзину</button>
                 <a href="{{ route('product', [isset($category) ? $category->code : $product->category->code, $product->code]) }}" class="btn btn-default" role="button">Подробнее</a>

@@ -12,11 +12,9 @@
                     {{ $product->name }}
                 </a>
             </td>
-            <td>
-                <span class="badge">{{ $product->countInOrder }}</span>
-            </td>
-            <td>{{ $product->price }} {{ App\Services\CurrencyConvertion::getCurrencySymbol() }}</td>
-            <td>{{ $product->getPriceForCount() }} {{ App\Services\CurrencyConvertion::getCurrencySymbol() }}</td>
+            <td><span class="badge">{{ $product->countInOrder }}</span></td>
+            <td>{{ $product->price }} {{ $currencySymbol }}</td>
+            <td>{{ $product->getPriceForCount() }} {{ $currencySymbol }}</td>
         </tr>
         @endforeach
     </tbody>
