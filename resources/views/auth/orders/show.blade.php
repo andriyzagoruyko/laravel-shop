@@ -25,18 +25,18 @@
                                 <td>
                                     <a href="{{ route('product', [$product->category->code, $product->code]) }}">
                                         <img height="56px"
-                                             src="{{ Storage::url($product->image) }}">
+                                            src="{{ Storage::url($product->image) }}">
                                         {{ $product->name }}
                                     </a>
                                 </td>
-                                <td><span class="badge">1</span></td>
-                                <td>{{ $product->price }} руб.</td>
-                                <td>{{ $product->getPriceForCount()}} руб.</td>
+                                <td><span class="badge">{{ $product->pivot->count }}</span></td>
+                                <td>{{ $product->pivot->price }} {{ $order->currency->symbol }}</td>
+                                <td>{{ $product->pivot->price * $product->pivot->count}} {{ $order->currency->symbol }}</td>
                             </tr>
                         @endforeach
                         <tr>
                             <td colspan="3">Общая стоимость:</td>
-                            <td>{{  $order->calculateFullSumm() }} руб.</td>
+                            <td>{{  $order->sum }} {{ $order->currency->symbol }}</td>
                         </tr>
                         </tbody>
                     </table>

@@ -9,12 +9,16 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id'];
+    protected $fillable = ['user_id', 'currency_id', 'sum'];
 
     public function products() {
-        return $this->belongsToMany(Product::class)->withPivot('count')->withTimestamps();
+        return $this->belongsToMany(Product::class)->withPivot(['count', 'price'])->withTimestamps();
     }
 
+    public function currency() {
+        return $this->belongsTo(Currency::class); 
+    }
+    
     public function scopeActive($query) {
         return $query->where('status', 1);
     }
@@ -29,31 +33,36 @@ class Order extends Model
         return $sum;
     }
 
-    public static function changeFullSum($changeSum) {
-        $sum = self::getFullSum() + $changeSum;
-        session(['full_order_sum' => $sum]);
-    }
+    public function getFullSum() {
+        $sum = 0;
 
-    public static function getFullSum() {
-        return session('full_order_sum', 0);
-    }
-    
-    public static function eraseOrderSum() {
-        session()->forget('full_order_sum');
-    }
-
-    public function saveOrder($name, $phone) {
-        if ($this->status == 0) {
-            $this->name = $name;
-            $this->phone = $phone;
-            $this->status = 1;
-            $this->save();
-            
-            session()->forget('orderId');
-
-            return true;
+        foreach ($this->products as $product) {
+            $sum += $product->price * $product->countInOrder;
         }
 
-        return false;
+        return $sum;
+    }
+    
+
+    public function saveOrder($name, $phone) {
+        $this->name = $name;
+        $this->phone = $phone;
+        $this->status = 1;
+        $this->sum = $this->getFullSum();
+
+        $products = $this->products;
+        $this->save();
+        
+        
+        foreach ($products as $productInOrder) {
+            $pivot = $this->products()->attach($productInOrder, [
+                'count' => $productInOrder->countInOrder,
+                'price' => $productInOrder->price
+            ]);
+        }
+
+        session()->forget('order');
+
+        return true;
     }
 }

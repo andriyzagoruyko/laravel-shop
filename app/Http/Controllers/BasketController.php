@@ -18,7 +18,7 @@ class BasketController extends Controller
     public function basketPlace() {
         $basket = new Basket();
         $order = $basket->getOrder();
-
+         //dd( $order);   
         if (!$basket->countAvaliable()) {
             session()->flash('warning', 'Товар не доступен для заказа в полном объеме');
             return redirect()->route('basket');
@@ -32,7 +32,6 @@ class BasketController extends Controller
         $email = Auth::check() ? Auth::user()->email :  $request->email;
 
         if ((new Basket())->saveOrder($request->name, $request->phone, $email)) {
-            Order::eraseOrderSum(0);
             session()->flash('success', 'Ваш заказ принят в обработку');
         } else{
             session()->flash('warning', 'Товар не доступен для заказа в полном объеме');

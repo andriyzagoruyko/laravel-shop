@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
 use App\Models\Product;
 use App\Mail\OrderCreated;
+use App\Services\CurrencyConvertion;
+
 
 
 
@@ -16,9 +18,9 @@ class Basket
 
     function __construct($createOrder = false) {
 
-        $orderId =  session('orderId');
+        $order = session('order');
         
-        if (is_null($orderId) && $createOrder) {
+        if (is_null($order) && $createOrder) {
 
             $data = [];
 
@@ -26,11 +28,13 @@ class Basket
                 $data['user_id'] = Auth::id();
             }
 
-            $order = $this->order = Order::create($data);
-            session(['orderId' => $order->id]);
-        }
-        else {
-            $this->order = Order::findOrFail($orderId);
+            $data['currency_id'] = CurrencyConvertion::getCurrentCurrencyFromSession()->id;
+
+
+            $order = $this->order = new Order($data);
+            session(['order' => $order]);
+        } else {
+            $this->order = $order;
         }
     }
 
@@ -39,23 +43,24 @@ class Basket
     }
 
     public function countAvaliable($updateCount = false){
-        $orderList = $this->order->products;
 
-        foreach($orderList as $orderProduct)
-        {
-            $pivotCount = $this->getPivotRow($orderProduct)->count;
+        $products = collect([]);
 
-            if ($orderProduct->count < $pivotCount) {
+        foreach($this->order->products as $orderProduct)
+        { 
+            $product = Product::find($orderProduct->id);
+            if ($orderProduct->countInOrder > $product->count) {
                 return false;
             }
 
             if ($updateCount) {
-                $orderProduct->count -= $pivotCount;
+                $product->count -= $orderProduct->countInOrder;
+                $products->push($product);
             }
         }
 
         if ($updateCount) {
-            $orderList->map->save();
+            $products->map->save();
         }
 
         return true;
@@ -66,50 +71,48 @@ class Basket
             return false;
         }
 
-        Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
+        $result = $this->order->saveOrder($name, $phone);
 
-        return $this->order->saveOrder($name, $phone);
-    }
+        if ($result) {
+            Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
+        }
 
-    protected function getPivotRow($product){
-        return $this->order->products()->where('product_id', $product->id)->first()->pivot;
+        return $result;
     }
 
     public function addProduct(Product $product) {
 
-        if ($this->order->products->contains($product->id)) {
-            $pivotRow = $this->getPivotRow($product);
-            $pivotRow->count++;
+        if ($this->order->products->contains($product)) {
+            $pivotRow = $this->order->products->where('id', $product->id)->first();
 
-            if ($pivotRow->count > $product->count) {
+            if ( $pivotRow->countInOrder >= $product->count) {
                 return false;
             }
-            $pivotRow->update();
+
+            $pivotRow->countInOrder++;
+
         }else{
             if ($product->count <= 0) {
                 return false;
             } 
-
-            $this->order->products()->attach($product->id);
+            $product->countInOrder = 1;
+            $this->order->products->push($product);
         }
 
-        Order::changeFullSum($product->price);
         return true;
     }
 
     public function removeProduct(Product $product) {
 
-        if ($this->order->products->contains($product->id)) {
-            $pivotRow = $this->getPivotRow($product);
+        if ($this->order->products->contains($product)) {
 
-            if ($pivotRow->count <= 1) {
-                $this->order->products()->detach($product->id);
+            $pivotRow = $this->order->products->where('id', $product->id)->first();
+
+            if ($pivotRow->countInOrder <= 1) {
+                $this->order->products->pop($pivotRow);
             }else {
-                $pivotRow->count--;
-                $pivotRow->update();
+                $pivotRow->countInOrder--;
             }
-
-            Order::changeFullSum(-$product->price);
         }
     }
 }
