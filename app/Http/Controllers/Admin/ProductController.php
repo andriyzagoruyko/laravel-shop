@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Property;
+
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +34,9 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::get();
-        return view('auth.products.form', compact('categories'));
+        $properties = Property::get();
+
+        return view('auth.products.form', compact('categories', 'properties'));
     }
 
     /**
@@ -70,7 +74,8 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::get();
-        return view('auth.products.form', compact('product', 'categories'));    }
+        $properties = Property::get();
+        return view('auth.products.form', compact('product', 'categories', 'properties'));    }
 
     /**
      * Update the specified resource in storage.
@@ -82,6 +87,8 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $params = $this->prepareData($request, $product);
+        $product->properties()->sync($request->property_id);
+
         $product->update($params);
         
         session()->flash('success', 'Товар обновлен');

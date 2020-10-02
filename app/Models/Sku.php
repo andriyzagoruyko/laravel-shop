@@ -17,6 +17,6 @@ class Sku extends Model
 
     //!TODO: check table name and fiels
     public function propertyOptions(){
-        return $this->belongsToMany(PropertyOption::class);
+        return $this->belongsToMany(PropertyOption::class, 'sku_property_option')->withTimestamps();
     }
 }

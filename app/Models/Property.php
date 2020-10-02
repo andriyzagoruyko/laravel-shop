@@ -22,4 +22,3 @@ class Property extends Model
         return $this->belongsToMany(Product::class);
     }
 }
- 

@@ -26,7 +26,7 @@ class Product extends Model
     
     //ToDO: check table name for relation
     public function properties() {
-        return $this->belongsToMany(Property::class);
+        return $this->belongsToMany(Property::class, 'property_product')->withTimestamps();
     }
 
     public function getCategory() {
