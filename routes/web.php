@@ -7,7 +7,12 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PropertyController;
+use App\Http\Controllers\Admin\PropertyOptionController;
+
+
 use App\Http\Controllers\ResetController;
+
 
 
 /*
@@ -47,6 +52,9 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::resource('categories', CategoryController::class);
         Route::resource('products', ProductController::class);
+        Route::resource('properties', PropertyController::class);
+        Route::resource('properties/{property}/property-options', PropertyOptionController::class);
+
     });
 });
 

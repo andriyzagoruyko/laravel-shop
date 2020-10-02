@@ -24,14 +24,15 @@
             <a class="navbar-brand" href="{{ route('index') }}">
                 Вернуться на сайт
             </a>
-
-            <ul class="nav navbar-nav">
-                @admin
+            @admin
+                <ul class="nav navbar-nav">
                     <li><a href="{{ route('categories.index') }}">Категории</a></li>
                     <li><a href="{{ route('products.index') }}">Товары</a></li>
+                    <li><a href="{{ route('properties.index') }}">Свойства</a></li>
                     <li><a href="{{ route('home') }}">Заказы</a></li>
-                @endadmin
-            </ul>
+                </ul>
+            @endadmin
+
 
             <div id="navbar" class="collapse navbar-collapse">
                 @guest
