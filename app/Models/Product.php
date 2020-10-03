@@ -33,14 +33,11 @@ class Product extends Model
         return Category::find($this->category_id)->name;
     }
 
-    public function getPriceForCount() {
-        if (!is_null($this->pivot)) {
-            return $this->price * $this->pivot->count;
-        }
 
-        return $this->price;
+    public function scopeByCode($query, $code) {
+        return $query->Where('code', $code);
     }
-
+    
     public function scopeHit($query) {
         return $query->orWhere('hit', 1);
     }
@@ -53,13 +50,7 @@ class Product extends Model
         return $query->orWhere('recommend', 1);
     }
 
-    public function scopeByCode($query, $code) {
-        return $query->Where('code', $code);
-    }
 
-    public function isAvailable() {
-        return !$this->trashed() && $this->count > 0;
-    }
 
     public function isHit() {
         return $this->hit === 1;

@@ -2,30 +2,33 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Sku;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendSubscriptionMessage;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 class Subscription extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['email', 'product_id'];
+    protected $fillable = ['email', 'sku_id'];
 
-    public function scopeActiveByProductId($query, $productId) {
-        return $query->where('status', 0)->where('product_id', $productId);
+    public function scopeActiveBySkuId($query, $skuId) {
+        return $query->where('status', 0)->where('sku_id', $skuId);
     }
 
-    public function product() {
-        return $this->belongsTo(Product::class);
+    public function sku() {
+        return $this->belongsTo(Sku::class);
     }
 
-    public static function sendEmailBySubscription(Product $product) {
-        $subscriptions = self::ActiveByProductId($product->id)->get();
+    public static function sendEmailBySubscription(Sku $sku) {
+        
+        $subscriptions = self::ActiveBySkuId($sku->id)->get();
+
         foreach ($subscriptions as $subscription) {
-            Mail::to($subscription->email)->send(new SendSubscriptionMessage($product));
+            Mail::to($subscription->email)->send(new SendSubscriptionMessage($sku));
             $subscription->status = 1;
             $subscription->save();
         }

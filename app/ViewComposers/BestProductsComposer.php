@@ -2,19 +2,19 @@
 
 namespace App\ViewComposers;
 
-use Illuminate\View\View;
-use App\Models\Product;
+use App\Models\Sku;
 use App\Models\Order;
+use Illuminate\View\View;
 
 
 class BestProductsComposer
 {
     public function compose(View $view) {
-        $bestProducts = Order::get()->map->products->flatten()->map->pivot->mapToGroups(function ($pivot) {
-            return [$pivot->product_id => $pivot->count];
+        $bestSkus = Order::get()->map->skus->flatten()->map->pivot->mapToGroups(function ($pivot) {
+            return [$pivot->sku_id => $pivot->count];
         })->map->sum()->sortByDesc(null)->take(3)->keys()->toArray();
 
-        $bestProducts = Product::whereIn('id',$bestProducts)->get();
-        $view->with('bestProducts', $bestProducts);
+        $bestSkus = Sku::whereIn('id',$bestSkus)->get();
+        $view->with('bestSkus', $bestSkus);
     }
 }

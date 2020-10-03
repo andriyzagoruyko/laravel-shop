@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sku;
+use App\Models\Order;
+use App\Classes\Basket;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Order;
-use App\Models\Product;
-use App\Classes\Basket;
 
 class BasketController extends Controller
 {
@@ -40,23 +41,22 @@ class BasketController extends Controller
         return redirect()->route('index');
     }
 
-    public function basketAdd(Product $product) {
-
-        $result= (new Basket(true))->addProduct($product);
+    public function basketAdd(Sku $sku) {
+        $result= (new Basket(true))->addSku($sku);
 
         if ($result) {
-            session()->flash('success', 'Добавлено в корзину: ' .  $product->name);
+            session()->flash('success', 'Добавлено в корзину: ' .  $sku->product->name);
         } else {
-            session()->flash('warning', 'Товар ' .  $product->name . 'в больше кол-ве не доступен для заказа');
+            session()->flash('warning', 'Товар ' .  $sku->product->name . 'в больше кол-ве не доступен для заказа');
         }
 
         return redirect()->route('basket');
     }
 
-    public function basketRemove(Product $product) {
-        (new Basket())->removeProduct($product);
+    public function basketRemove(Sku $sku) {
+        (new Basket())->removeSku($sku);
 
-        session()->flash('warning', 'Удалено с корзины: ' .  $product->name);
+        session()->flash('warning', 'Удалено с корзины: ' .  $sku->product->name);
 
         return redirect()->route('basket');
     }

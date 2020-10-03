@@ -2,43 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Category;
+use App\Models\Sku;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\Currency;
 use App\Models\Subscription;
-use App\Http\Requests\ProductsFilterRequest;
-use App\Http\Requests\SubscriptionRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\App;
+use App\Http\Requests\SubscriptionRequest;
+use App\Http\Requests\ProductsFilterRequest;
 
 class MainController extends Controller
 {
     public function index(ProductsFilterRequest $requset) {
-        $productQuery = Product::with('category');
+        $skuQuery = Sku::with(['product.category']);
 
         if ($requset->filled('price_from')) {
-            $productQuery->where('price', '>=', $requset->price_from);
+            $skuQuery->where('price', '>=', $requset->price_from);
         }
 
         if ($requset->filled('price_to')) {
-            $productQuery->where('price', '<=', $requset->price_to);
+            $skuQuery->where('price', '<=', $requset->price_to);
         }
 
-        $checkboxes = ['hit', 'new', 'recommend'];
+       // $checkboxes = ['hit', 'new', 'recommend'];
 
-        if ($requset->hasAny($checkboxes)) {
-            $productQuery->where(function($query ) use ($requset, $checkboxes) {
+        /*if ($requset->hasAny($checkboxes)) {
+            $skuQuery->where(function($query ) use ($requset, $checkboxes) {
                 foreach($checkboxes as $field) {
                     $requset->has($field) && $query->$field();
                 }
             });
+        }*/
+
+        foreach(['hit', 'new', 'recommend'] as $field) {
+            if ($requset->has($field)) {
+                $skuQuery->whereHas('product', function ($query) use ($field) {
+                    $query->where($field, '=', '1');
+                });
+            } 
         }
 
-        $products = $productQuery->paginate(6);
+        $skus = $skuQuery->paginate(6);
 
-        return view('index', compact('products'));
+        return view('index', compact('skus'));
     }
 
     public function categories() {
@@ -50,24 +59,24 @@ class MainController extends Controller
         return view('single-category', compact('category'));
     }
 
-    public function singleProduct($categoryCode, $productCode = null) {
-        $product = Product::byCode($productCode)->first();
+    public function sku($categoryCode, $productCode, Sku $sku) {
 
-        if (Auth::check() && Auth::user()->isAdmin()) {
-                $product = Product::withTrashed()->byCode($productCode)->firstOrFail();
-        }else {
-            $product = Product::byCode($productCode)->firstOrFail(); 
+        if ($sku->product->code != $productCode ) {
+            abort(404, 'Product not found');
         }
 
-        $category = $product->category;
-        return view('single-product', compact('category', 'product'));
+        if ($sku->product->category->code != $categoryCode) {
+            abort(404, 'Category not found');
+        }
+
+        return view('single-product', compact('sku'));
     }
 
-    public function subscribe(SubscriptionRequest $request, Product $product) {
+    public function subscribe(SubscriptionRequest $request, Sku $sku) {
 
         Subscription::create([
             'email' => $request->email,
-            'product_id' => $product->id
+            'sku_id' => $sku->id
         ]);
 
         return redirect()->back()->with('success', 'Спасибо, мы сообщим когда товар появится в наличии');

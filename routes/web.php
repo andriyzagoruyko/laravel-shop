@@ -9,9 +9,6 @@ use App\Http\Controllers\Admin\SkuController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
-
-
-
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyOptionController;
@@ -62,7 +59,7 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 Route::group(['prefix' => 'basket'], function() {
-    Route::post('/add/{product}',  [BasketController::class, 'basketAdd'])->name("basket-add");
+    Route::post('/add/{sku}',  [BasketController::class, 'basketAdd'])->name("basket-add");
     Route::group([
         'middleware' => 'basket_not_empty',
         ], 
@@ -70,16 +67,18 @@ Route::group(['prefix' => 'basket'], function() {
             Route::get('/',  [BasketController::class, 'basket'])->name("basket");
             Route::get('/place',  [BasketController::class, 'basketPlace'])->name("basket-place");
             Route::post('/place',  [BasketController::class, 'basketConfirm'])->name("basket-confirm");
-            Route::post('/remove/{product}',  [BasketController::class, 'basketRemove'])->name("basket-remove");
+            Route::post('/remove/{sku}',  [BasketController::class, 'basketRemove'])->name("basket-remove");
     });
 });
 
-Route::get('/locale/{locale}',  [MainController::class, 'changeLocale'])->name("locale");
-Route::get('/currency/{currencyCode}',  [MainController::class, 'changeCurrency'])->name("currency");
+
 
 Route::get('/',  [MainController::class, 'index'])->name("index");
+Route::get('/locale/{locale}',  [MainController::class, 'changeLocale'])->name("locale");
+Route::get('/currency/{currencyCode}',  [MainController::class, 'changeCurrency'])->name("currency");
+Route::post('/subscription/{sku}',  [MainController::class, 'subscribe'])->name("subscription");
+
 Route::get('/categories',  [MainController::class, 'categories'])->name("categories");
 Route::get('/{category}',  [MainController::class, 'singleCategory'])->name("category");
-Route::get('/{category}/{product?}',  [MainController::class, 'singleProduct'])->name("product");
-Route::post('subscription/{product}',  [MainController::class, 'subscribe'])->name("subscription");
+Route::get('/{category}/{product}/{sku}',  [MainController::class, 'sku'])->name("sku");
 
