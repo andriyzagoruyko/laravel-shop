@@ -76,6 +76,7 @@ class CurrencyConvertion
                 $targetCurrency = self::$container[$targetCurrencyCode];
             }
         }
+        
 
         return $sum  / $originCurrency->rate * $targetCurrency->rate;
     }

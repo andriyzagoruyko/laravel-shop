@@ -50,8 +50,6 @@ class Product extends Model
         return $query->orWhere('recommend', 1);
     }
 
-
-
     public function isHit() {
         return $this->hit === 1;
     }
@@ -64,8 +62,6 @@ class Product extends Model
         return $this->recommend === 1;
     }
 
-    public function getPriceAttribute($value) {
-        return round(CurrencyConvertion::convert($value), 2);
-    }
+
 
 }

@@ -29,7 +29,7 @@
             </tr>
             <tr>
                 <td>Валюта</td>
-                <td>@isset($coupon->currency->code ){{ $coupon->currency->code }}@endisset</td>
+                <td>@isset($coupon->currency->code){{ $coupon->currency->code }}@endisset</td>
             </tr>
             <tr>
                 <td>Абсолютное значенин</td>
@@ -45,7 +45,8 @@
             </tr>
             <tr>
                 <td>Действителен до:</td>
-                <td>{{ $coupon->expired_at->format('d.m.Y') }}</td>
+                <td>@isset($coupon->expired_at){{ $coupon->expired_at->format('d.m.Y') }}@endisset
+                  </td>
             </tr>
             </tbody>
         </table>

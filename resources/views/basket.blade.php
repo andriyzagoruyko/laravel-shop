@@ -50,10 +50,33 @@
 
                 <tr>
                     <td colspan="3">Общая стоимость:</td>
-                    <td>{{ $order->getFullSum() }} {{ $currencySymbol }}</td>
+                    @if($order->hasCoupon())
+                        <td><del>{{ $order->getFullSum(false) }} {{ $currencySymbol }}</del> <b>{{ $order->getFullSum() }} {{ $currencySymbol }}</b></td>
+                    @else
+                        <td>{{ $order->getFullSum() }} {{ $currencySymbol }}</td>
+                    @endif
                 </tr>
             </tbody>
         </table>
+        <div class="row">
+            @if(!$order->hasCoupon())
+                <div class="form-inline pull-right">
+                    <form method="POST" action="{{ route('set-coupon') }}">
+                        @csrf
+                        <label for="coupon">Добавить купон:</label>
+                        <input class="form-control" type="text" name="coupon">
+                        <button type="submit" class="btn btn-success">Применить</button>
+                    </form>
+                    @error('coupon')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+            @else
+                <div>Использован купон {{ $order->coupon->code }}</div> 
+            @endif 
+        </div>
+    </div>
+    <br>
         <br>
         <div class="btn-group pull-right" role="group">
             <a type="button" class="btn btn-success" href="{{ route('basket-place') }}">Оформить заказ</a>

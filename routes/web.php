@@ -71,6 +71,7 @@ Route::group(['prefix' => 'basket'], function() {
             Route::get('/place',  [BasketController::class, 'basketPlace'])->name("basket-place");
             Route::post('/place',  [BasketController::class, 'basketConfirm'])->name("basket-confirm");
             Route::post('/remove/{sku}',  [BasketController::class, 'basketRemove'])->name("basket-remove");
+            Route::post('/coupon',  [BasketController::class, 'setCoupon'])->name("set-coupon");
     });
 });
 

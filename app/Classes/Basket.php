@@ -4,6 +4,7 @@ namespace App\Classes;
 
 use App\Models\Sku;
 use App\Models\Order;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Mail\OrderCreated;
 use App\Services\CurrencyConvertion;
@@ -115,5 +116,9 @@ class Basket
                 $pivotRow->countInOrder--;
             }
         }
+    }
+
+    public function setCoupon(Coupon $coupon) {
+        $this->order->coupon()->associate($coupon);
     }
 }

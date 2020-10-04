@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Services\CurrencyConvertion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\softDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 class Sku extends Model
@@ -33,4 +34,7 @@ class Sku extends Model
         return $this->price;
     }
     
+    public function getPriceAttribute($value) {
+        return round(CurrencyConvertion::convert($value), 2);
+    }
 }

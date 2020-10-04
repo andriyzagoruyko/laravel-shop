@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CouponRequest;
+
 
 class CouponController extends Controller
 {
@@ -35,7 +37,7 @@ class CouponController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CuponRequest $request)
+    public function store(CouponRequest $request)
     {
         $params = $request->all();
 
@@ -81,7 +83,7 @@ class CouponController extends Controller
      * @param  \App\Models\Coupon  $coupon
      * @return \Illuminate\Http\Response
      */
-    public function update(CuponRequest $request, Coupon $coupon)
+    public function update(CouponRequest $request, Coupon $coupon)
     {
         $params = $request->all();
 

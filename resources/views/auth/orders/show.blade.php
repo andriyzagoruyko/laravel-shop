@@ -38,6 +38,11 @@
                             <td colspan="3">Общая стоимость:</td>
                             <td>{{  $order->sum }} {{ $order->currency->symbol }}</td>
                         </tr>
+                        @if($order->hasCoupon())
+                        <tr>
+                            Был использован купон: <a href="{{ route('coupons.show',  $order->coupon->id) }}"></a> {{ $order->coupon->code }}
+                        </tr>
+                        @endif
                         </tbody>
                     </table>
                     <br>
