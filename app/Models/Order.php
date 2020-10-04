@@ -19,6 +19,10 @@ class Order extends Model
     public function currency() {
         return $this->belongsTo(Currency::class); 
     }
+
+    public function coupon() {
+        return $this->belongsTo(Coupon::class);
+    }
     
     public function scopeActive($query) {
         return $query->where('status', 1);

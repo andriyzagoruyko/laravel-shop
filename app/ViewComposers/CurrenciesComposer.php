@@ -11,7 +11,6 @@ class CurrenciesComposer
 {
     public function compose(View $view) {
         $currencies = CurrencyConvertion::getCurrencies();
-
         $view->with('currencies', $currencies);
     }
 }

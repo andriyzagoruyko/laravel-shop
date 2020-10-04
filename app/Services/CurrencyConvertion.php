@@ -38,6 +38,8 @@ class CurrencyConvertion
     }
 
     public static function getCurrencies() {
+        self::loadContainer();
+        
         return self::$container;
     }
 

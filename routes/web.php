@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyOptionController;
+use App\Http\Controllers\Admin\CouponController;
+
 
 
 
@@ -55,6 +57,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::resource('products/{product}/skus', SkuController::class);
         Route::resource('properties', PropertyController::class);
         Route::resource('properties/{property}/property-options', PropertyOptionController::class);
+        Route::resource('coupons', CouponController::class);
     });
 });
 
