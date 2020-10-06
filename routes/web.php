@@ -13,8 +13,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyOptionController;
 use App\Http\Controllers\Admin\CouponController;
-
-
+use App\Http\Controllers\Admin\MerchantController;
 
 
 /*
@@ -58,6 +57,8 @@ Route::group(['middleware' => 'auth'], function() {
         Route::resource('properties', PropertyController::class);
         Route::resource('properties/{property}/property-options', PropertyOptionController::class);
         Route::resource('coupons', CouponController::class);
+        Route::resource('merchants', MerchantController::class);
+        Route::get('merchant/{merchant}/update_token', [MerchantController::class, 'updateToken'])->name('merchants.update_token');
     });
 });
 
@@ -74,8 +75,6 @@ Route::group(['prefix' => 'basket'], function() {
             Route::post('/coupon',  [BasketController::class, 'setCoupon'])->name("set-coupon");
     });
 });
-
-
 
 Route::get('/',  [MainController::class, 'index'])->name("index");
 Route::get('/locale/{locale}',  [MainController::class, 'changeLocale'])->name("locale");

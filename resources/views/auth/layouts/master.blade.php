@@ -30,7 +30,7 @@
                     <li><a href="{{ route('products.index') }}">Товары</a></li>
                     <li><a href="{{ route('properties.index') }}">Свойства</a></li>
                     <li><a href="{{ route('coupons.index') }}">Купоны</a></li>
-
+                    <li><a href="{{ route('merchants.index') }}">Поставщики</a></li>
                     <li><a href="{{ route('home') }}">Заказы</a></li>
                 </ul>
             @endadmin
